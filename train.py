@@ -22,7 +22,7 @@ from utils.utils import (create_logger,
                          )
 
 args = parse_command_line_arguments()
-log_dir = os.path.join(args.log_dir, datetime.today().isoformat())
+log_dir = args.log_dir
 logger = create_logger(args.log_name, log_dir)
 logger.info('Using arguments...')
 for arg in vars(args):
