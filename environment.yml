@@ -1,0 +1,34 @@
+name: dime_rxn
+
+channels:
+  - defaults
+  - rdkit
+  - rmg
+  - schrodinger
+  - pytorch
+  - conda-forge
+
+dependencies:
+  - hyperopt>=0.2.2
+  - ipython
+  - jupyter
+  - matplotlib>=3.2
+  - numpy>=1.18.0
+  - openbabel
+  - optuna>=2.8
+  - pandas>=1.1
+  - pip>=19.0
+  - psutil
+  - py3dmol>=0.8.0
+  - pymol 
+  - pyyaml
+  - python==3.7.11
+  - pytorch==1.8.1
+  - quantities
+  - rdkit>=2020.03.1.0
+  - scikit-learn
+  - scipy
+  - seaborn
+  - tqdm
+  - xlrd
+  - xlwt
