@@ -1,0 +1,26 @@
+################################################################################
+#
+#   File patterns for git to ignore
+#
+################################################################################
+
+# PyCharm project files
+.idea/*
+
+# Compiled Python modules
+*.pyc
+
+# MacOS files
+.DS_Store
+
+# Jupyter notebook checkpoints
+*.ipynb_checkpoints
+
+# log directory 
+log/*
+
+# ipython folder
+ipython/*
+
+# egg files (pip install -e)
+*.egg-info/*
