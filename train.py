@@ -117,7 +117,7 @@ logger.info(f'\nBest Validation Loss {best_val_loss:.3f} on Epoch {best_epoch}')
 model = ReactionModel(**model_params).to(device)
 model.load_state_dict(torch.load(os.path.join(log_dir, 'best_model.pt'), map_location=device))
 test_rmse, test_mae = test(model, test_loader, device, stdzer)
-logger.info(f'When using the model from Epoch {best_epoch}: Testing RMSE {test_rmse:.5f} Testing MAE {val_mae:.5f}')
+logger.info(f'When using the model from Epoch {best_epoch}: Testing RMSE {test_rmse:.5f} Testing MAE {test_mae:.5f}')
 
 # make plots
 log_file = os.path.join(log_dir, args.log_name + '.log')
