@@ -76,7 +76,7 @@ else:
                     }
 model = ReactionModel(**model_params).to(device)
 logger.info(f'Model architecture is:\n{model}')
-logger.info(f'Total number of parameters: {param_count(model)}')
+logger.info(f'Total number of parameters: {param_count(model):,}')
 
 # get optimizer and scheduler and define loss
 optimizer, scheduler = get_optimizer_and_scheduler(args, model, len(train_loader.dataset))
