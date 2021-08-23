@@ -94,7 +94,7 @@ if scheduler:
     logger.info('')
 logger.info(f'Steps per epoch: {len(train_loader)}')
 
-best_val_loss = math.inf
+best_val_rmse = math.inf
 best_epoch = 0
 logger.info("Starting training...\n")
 for epoch in range(1, args.num_epochs):
@@ -106,12 +106,12 @@ for epoch in range(1, args.num_epochs):
     if scheduler and not isinstance(scheduler, NoamLR):
         scheduler.step(val_rmse)
 
-    if val_rmse <= best_val_loss:
-        best_val_loss = val_rmse
+    if val_rmse <= best_val_rmse:
+        best_val_rmse = val_rmse
         best_epoch = epoch
         torch.save(model.state_dict(), os.path.join(log_dir, 'best_model.pt'))
 
-logger.info(f'\nBest Validation Loss {best_val_loss:.3f} on Epoch {best_epoch}')
+logger.info(f'\nBest Validation RMSE {best_val_rmse:.3f} on Epoch {best_epoch}')
 
 # create new instance for testing
 model = ReactionModel(**model_params).to(device)
