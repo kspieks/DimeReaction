@@ -101,7 +101,7 @@ def plot_train_val_loss(log_file):
     with open(log_file) as f:
         lines = f.readlines()
         for line in reversed(lines):
-            if 'Epoch' in line and 'Validation RMSE' in line:
+            if 'Epoch' in line and 'Validation RMSE' in line and 'Best' not in line:
                 val_rmse.append(float(line.split(' ')[4].rstrip()))
             elif 'Epoch' in line and 'Training RMSE' in line:
                 train_rmse.append(float(line.split(' ')[4].rstrip()))
