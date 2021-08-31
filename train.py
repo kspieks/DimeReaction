@@ -67,6 +67,7 @@ else:
                     'num_after_skip': args.num_after_skip,
                     'activation': get_activation_function(args.activation),
                     # MLP
+                    'num_additional_ffn_inputs': len(args.ffn_inputs),
                     'ffn_hidden_size': args.ffn_hidden_size,
                     'out_dim': len(args.targets),
                     'ffn_num_layers': args.ffn_num_layers,

@@ -17,6 +17,7 @@ class ReactionDataset(Dataset):
         self.r_dicts = self.get_dicts(self.args.reactant_xyzs)  # list of reactant dictionaries
         self.ts_dicts = self.get_dicts(self.args.ts_xyzs)       # list of ts dictionaries
 
+        self.ffn_inputs = self.get_ffn_inputs()                 # list of additional ffn inputs
         self.targets = self.get_targets()                       # list of regression targets
         self.mean = np.mean(self.targets, axis=0)
         self.std = np.std(self.targets, axis=0)
@@ -36,16 +37,31 @@ class ReactionDataset(Dataset):
 
     def get_targets(self):
         """Create list of targets for regression"""
-        df = pd.read_csv(self.args.target_path)
+        df = pd.read_csv(self.args.data_path)
         targets = df[self.args.targets].values
 
         return [targets[i] for i in self.split]
+
+    def get_ffn_inputs(self):
+        """Create list of inputs to append before the ffn used during the readout phase"""
+        if self.args.ffn_inputs is None:
+            return None
+
+        df = pd.read_csv(self.args.data_path)
+        data = []
+        scale_factor = {'dh': 60}  # scale the values to approximately the same magnitude
+        for col in self.args.ffn_inputs:
+            data.append(df[col].values / scale_factor[col])
+        ffn_inputs = [np.array(i) for i in zip(*data)]
+
+        return [[ffn_inputs[i]] for i in self.split]
 
     def process_key(self, key):
         r_dict = self.r_dicts[key]
         ts_dict = self.ts_dicts[key]
         y = self.targets[key]
         data = self.xyz2data(r_dict, ts_dict, y)
+        data.ffn_inputs = None if self.ffn_inputs is None else torch.tensor(self.ffn_inputs[key], dtype=torch.float)
         return data
 
     def xyz2data(self, r_dict, ts_dict, y):

@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 
 from model.dimenet_pp import DimeNetPlusPlus
@@ -29,6 +30,7 @@ class ReactionModel(nn.Module):
                  dropout=0.0,
                  layer_norm=False,
                  batch_norm=False,
+                 num_additional_ffn_inputs=0,
                  ):
         super(ReactionModel, self).__init__()
 
@@ -47,7 +49,7 @@ class ReactionModel(nn.Module):
                                           num_after_skip=num_after_skip,
                                           act=activation,
                                           )
-
+        out_channels += num_additional_ffn_inputs
         self.ffn = MLP(in_dim=out_channels,
                        h_dim=ffn_hidden_size,
                        out_dim=out_dim,
@@ -58,8 +60,10 @@ class ReactionModel(nn.Module):
                        batch_norm=batch_norm,
                        )
 
-    def forward(self, ts_z, ts_coords, r_z, r_coords, r_z_batch):
+    def forward(self, ts_z, ts_coords, r_z, r_coords, r_z_batch, additional_ffn_inputs=None):
         diff = self.dimenet_pp(ts_z, ts_coords, r_z_batch) - self.dimenet_pp(r_z, r_coords, r_z_batch)
+        if additional_ffn_inputs is not None:
+            diff = torch.cat((diff, additional_ffn_inputs.float()), dim=-1)
         out = self.ffn(diff)
 
         return out
