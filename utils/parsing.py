@@ -30,8 +30,8 @@ def parse_command_line_arguments(command_line_args=None):
     parser.add_argument('--ts_xyzs', type=str,
                         help='Path to the csv file containing xyz coordinates for the transition states.')
 
-    parser.add_argument('--target_path', type=str,
-                        help='Path to the csv file containing SMILES and targets.')
+    parser.add_argument('--data_path', type=str,
+                        help='Path to the csv file containing SMILES, targets, and optional ffn inputs.')
     parser.add_argument('--targets', nargs='+', default=['ea'],
                         help='Name of columns to use as regression targets.')
     parser.add_argument('--split_path', type=str,
@@ -87,6 +87,8 @@ def parse_command_line_arguments(command_line_args=None):
                         help='Activation function.')
 
     # ffn parameters
+    parser.add_argument('--ffn_inputs', nargs='+',
+                        help='Name of columns to use as additional inputs for the FFN.')
     parser.add_argument('--ffn_hidden_size', type=int, default=None,
                         help='Hidden dim for FFN (defaults to out_channels).')
     parser.add_argument('--ffn_num_layers', type=int, default=3,

@@ -28,7 +28,7 @@ def train(model, loader, optimizer, loss, device, scheduler, logger, stdzer):
         batch = batch.to(device)
         optimizer.zero_grad()
 
-        out = model(batch.ts_z, batch.ts_coords, batch.r_z, batch.r_coords, batch.r_z_batch)
+        out = model(batch.ts_z, batch.ts_coords, batch.r_z, batch.r_coords, batch.r_z_batch, batch.ffn_inputs)
         result = loss(out, stdzer(batch.y))
         result.backward()
 
@@ -66,7 +66,7 @@ def test(model, loader, device, stdzer):
 
     for batch in tqdm(loader):
         batch = batch.to(device)
-        out = model(batch.ts_z, batch.ts_coords, batch.r_z, batch.r_coords, batch.r_z_batch)
+        out = model(batch.ts_z, batch.ts_coords, batch.r_z, batch.r_coords, batch.r_z_batch, batch.ffn_inputs)
 
         rmse_total += (stdzer(out, rev=True) - batch.y).square().sum(dim=0).detach().cpu()
         mae_total += (stdzer(out, rev=True) - batch.y).abs().sum(dim=0).detach().cpu()
