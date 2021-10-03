@@ -98,6 +98,7 @@ def plot_train_val_loss(log_file):
     Args:
         log_file (str): The path to the log file created during training.
     """
+    pattern = '-?[\d.]+(?:e-?\d+)?'
     val_rmse, train_rmse = [], []
     with open(log_file) as f:
         lines = f.readlines()
