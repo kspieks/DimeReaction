@@ -67,7 +67,7 @@ else:
                     'num_after_skip': args.num_after_skip,
                     'activation': get_activation_function(args.activation),
                     # MLP
-                    'num_additional_ffn_inputs': len(args.ffn_inputs),
+                    'num_additional_ffn_inputs': len(args.ffn_inputs) if args.ffn_inputs is not None else 0,
                     'ffn_hidden_size': args.ffn_hidden_size,
                     'out_dim': len(args.targets),
                     'ffn_num_layers': args.ffn_num_layers,
@@ -126,7 +126,7 @@ test_rmse, test_mae = test(model, test_loader, device, stdzer)
 logger.info(f'When using the model from Epoch {best_epoch}: '
             f'Overall Testing RMSE/MAE {test_rmse.mean():.5f}/{test_mae.mean():.5f}')
 for target, rmse, mae in zip(args.targets, test_rmse, test_mae):
-    logger.info(f'Epoch {epoch}: {target} Testing RMSE/MAE {rmse:.5f}/{mae:.5f}')
+    logger.info(f'Epoch {best_epoch}: {target} Testing RMSE/MAE {rmse:.5f}/{mae:.5f}')
 
 # make plots
 log_file = os.path.join(log_dir, args.log_name + '.log')
