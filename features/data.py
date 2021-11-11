@@ -18,9 +18,10 @@ class ReactionDataset(Dataset):
         self.ts_dicts = self.get_dicts(self.args.ts_xyzs)       # list of ts dictionaries
 
         self.ffn_inputs = self.get_ffn_inputs()                 # list of additional ffn inputs
-        self.targets = self.get_targets()                       # list of regression targets
-        self.mean = np.mean(self.targets, axis=0)
-        self.std = np.std(self.targets, axis=0)
+        if self.args.targets is not None:
+            self.targets = self.get_targets()                   # list of regression targets
+            self.mean = np.mean(self.targets, axis=0)
+            self.std = np.std(self.targets, axis=0)
 
     def get_dicts(self, xyz_path):
         """Creates list of dictionaries containing the molecule coordinates and atomic numbers"""
@@ -59,7 +60,10 @@ class ReactionDataset(Dataset):
     def process_key(self, key):
         r_dict = self.r_dicts[key]
         ts_dict = self.ts_dicts[key]
-        y = self.targets[key]
+        if self.args.targets is not None:
+            y = self.targets[key]
+        else:
+            y = np.nan
         data = self.xyz2data(r_dict, ts_dict, y)
         data.ffn_inputs = None if self.ffn_inputs is None else torch.tensor(self.ffn_inputs[key], dtype=torch.float)
         return data

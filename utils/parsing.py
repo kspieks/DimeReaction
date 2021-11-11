@@ -20,11 +20,6 @@ def parse_command_line_arguments(command_line_args=None):
     parser.add_argument('--verbose', action='store_true', default=False,
                         help='Boolean indicating whether to log gradient norm, parameter norm, learning rate, and batch loss.')
 
-    parser.add_argument('--model_params', type=str,
-                        help='Path to yaml file containing model parameters. Used when fine-tuning.')
-    parser.add_argument('--state_dict', type=str,
-                        help='Path to model checkpoint (.pt file). Used when fine-tuning.')
-
     parser.add_argument('--reactant_xyzs', type=str,
                         help='Path to the text file containing xyz coordinates for the reactants.')
     parser.add_argument('--ts_xyzs', type=str,
@@ -32,7 +27,7 @@ def parse_command_line_arguments(command_line_args=None):
 
     parser.add_argument('--data_path', type=str,
                         help='Path to the csv file containing SMILES, targets, and optional ffn inputs.')
-    parser.add_argument('--targets', nargs='+', default=['ea'],
+    parser.add_argument('--targets', nargs='+',
                         help='Name of columns to use as regression targets.')
     parser.add_argument('--split_path', type=str,
                         help='Path to .npy file with train, val, and test indices.')
@@ -102,6 +97,14 @@ def parse_command_line_arguments(command_line_args=None):
                         help='Batch normalization in FFN.')
     parser.add_argument('--dropout', type=float, default=0.0,
                         help='Dropout probability in FFN.')
+
+    # inference parameters
+    parser.add_argument('--model_params', type=str,
+                        help='Path to yaml file containing model parameters. Used with fine-tuning or inference.')
+    parser.add_argument('--state_dict', type=str,
+                        help='Path to model checkpoint (.pt file). Used with fine-tuning or inference.')
+    parser.add_argument('--sdtzer_path', type=str,
+                        help='Path to standardizer used during training.')
 
     args = parser.parse_args(command_line_args)
 

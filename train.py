@@ -1,6 +1,7 @@
 from datetime import datetime
 import os
 import math
+import pickle as pkl
 import random
 
 import numpy as np
@@ -37,6 +38,9 @@ train_loader, val_loader, test_loader = construct_loader(args, modes=('train', '
 mean = torch.tensor(train_loader.dataset.mean, dtype=torch.float).to(device)
 std = torch.tensor(train_loader.dataset.std, dtype=torch.float).to(device)
 stdzer = Standardizer(mean, std)
+stdzer_path = os.path.join(log_dir, 'stdzer.pkl')
+with open(stdzer_path, 'wb') as f:
+    pkl.dump(stdzer, f)
 logger.info(f'\nTraining target mean +- 1 std: {mean} +- {std} kcal/mol')
 logger.info(f'Validation target mean +- 1 std: {val_loader.dataset.mean} +- {val_loader.dataset.std} kcal/mol')
 logger.info(f'Testing target mean +- 1 std: {test_loader.dataset.mean} +- {test_loader.dataset.std} kcal/mol\n')
