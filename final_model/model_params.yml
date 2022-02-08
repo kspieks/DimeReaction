@@ -50,6 +50,7 @@ ffn_num_layers: 3
 hidden_channels: 100
 int_emb_size: 64
 layer_norm: false
+num_additional_ffn_inputs: 0
 num_after_skip: 2
 num_before_skip: 1
 num_blocks: 6
