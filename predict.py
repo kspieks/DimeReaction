@@ -38,10 +38,11 @@ model.load_state_dict(torch.load(args.state_dict, map_location=device))
 model.eval()
 
 preds = []
-for batch in tqdm(test_loader):
-    batch = batch.to(device)
-    out = model(batch.ts_z, batch.ts_coords, batch.r_z, batch.r_coords, batch.r_z_batch, batch.ffn_inputs)
-    preds.extend(stdzer(out, rev=True).detach().cpu().numpy().flatten().tolist())
+with torch.no_grad():
+    for batch in tqdm(test_loader):
+        batch = batch.to(device)
+        out = model(batch.ts_z, batch.ts_coords, batch.r_z, batch.r_coords, batch.r_z_batch, batch.ffn_inputs)
+        preds.extend(stdzer(out, rev=True).detach().cpu().numpy().flatten().tolist())
 
 # save preds to a csv
 df = pd.DataFrame(preds, columns=['predictions'])
