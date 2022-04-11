@@ -64,12 +64,13 @@ def test(model, loader, device, stdzer):
     model.eval()
     rmse_total, mae_total = 0, 0
 
-    for batch in tqdm(loader):
-        batch = batch.to(device)
-        out = model(batch.ts_z, batch.ts_coords, batch.r_z, batch.r_coords, batch.r_z_batch, batch.ffn_inputs)
+    with torch.no_grad():
+        for batch in tqdm(loader):
+            batch = batch.to(device)
+            out = model(batch.ts_z, batch.ts_coords, batch.r_z, batch.r_coords, batch.r_z_batch, batch.ffn_inputs)
 
-        rmse_total += (stdzer(out, rev=True) - batch.y).square().sum(dim=0).detach().cpu()
-        mae_total += (stdzer(out, rev=True) - batch.y).abs().sum(dim=0).detach().cpu()
+            rmse_total += (stdzer(out, rev=True) - batch.y).square().sum(dim=0).detach().cpu()
+            mae_total += (stdzer(out, rev=True) - batch.y).abs().sum(dim=0).detach().cpu()
 
     # divide by number of molecules
     val_rmse_loss = torch.sqrt(rmse_total / len(loader.dataset))
