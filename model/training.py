@@ -29,7 +29,7 @@ def train(model, loader, optimizer, loss, device, scheduler, logger, stdzer):
         optimizer.zero_grad()
 
         out = model(batch.ts_z, batch.ts_coords, batch.r_z, batch.r_coords, batch.r_z_batch)
-        result = loss(out.squeeze(-1), stdzer(batch.y))
+        result = loss(out, stdzer(batch.y))
         result.backward()
 
         # clip the gradients
@@ -48,10 +48,10 @@ def train(model, loader, optimizer, loss, device, scheduler, logger, stdzer):
         if logger:
             pnorm = compute_pnorm(model)
             gnorm = compute_gnorm(model)
-            logger.info(f'Training RMSE: {math.sqrt(result.item()):.4f}, PNorm: {pnorm:.4f}, GNorm: {gnorm:.4f}, {lrs_str}')
+            logger.info(f'Training RMSE: {math.sqrt(result.item()):.5f}, PNorm: {pnorm:.4f}, GNorm: {gnorm:.4f}, {lrs_str}')
 
-        rmse_total += (stdzer(out.squeeze(-1), rev=True) - batch.y).square().sum(dim=0).detach()
-        mae_total += (stdzer(out.squeeze(-1), rev=True) - batch.y).abs().sum(dim=0).detach()
+        rmse_total += (stdzer(out, rev=True) - batch.y).square().sum(dim=0).detach().cpu()
+        mae_total += (stdzer(out, rev=True) - batch.y).abs().sum(dim=0).detach().cpu()
 
     # divide by number of molecules
     train_rmse_loss = torch.sqrt(rmse_total / len(loader.dataset))
@@ -68,8 +68,8 @@ def test(model, loader, device, stdzer):
         batch = batch.to(device)
         out = model(batch.ts_z, batch.ts_coords, batch.r_z, batch.r_coords, batch.r_z_batch)
 
-        rmse_total += (stdzer(out.squeeze(-1), rev=True) - batch.y).square().sum(dim=0).detach()
-        mae_total += (stdzer(out.squeeze(-1), rev=True) - batch.y).abs().sum(dim=0).detach()
+        rmse_total += (stdzer(out, rev=True) - batch.y).square().sum(dim=0).detach().cpu()
+        mae_total += (stdzer(out, rev=True) - batch.y).abs().sum(dim=0).detach().cpu()
 
     # divide by number of molecules
     val_rmse_loss = torch.sqrt(rmse_total / len(loader.dataset))

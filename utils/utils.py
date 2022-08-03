@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -101,10 +102,11 @@ def plot_train_val_loss(log_file):
     with open(log_file) as f:
         lines = f.readlines()
         for line in reversed(lines):
-            if 'Epoch' in line and 'Validation RMSE' in line and 'Best' not in line:
-                val_rmse.append(float(line.split(' ')[4].rstrip()))
-            elif 'Epoch' in line and 'Training RMSE' in line:
-                train_rmse.append(float(line.split(' ')[4].rstrip()))
+            if 'Epoch' in line and 'Overall Validation RMSE' in line and 'Best' not in line:
+                # index 0 is epoch, index 1 is RMSE, index 2 is MAE
+                val_rmse.append(float(re.findall(pattern, line)[1].rstrip()))
+            elif 'Epoch' in line and 'Overall Training RMSE' in line:
+                train_rmse.append(float(re.findall(pattern, line)[1].rstrip()))
             elif 'Starting training...' in line:
                 break
 

@@ -18,8 +18,8 @@ class ReactionDataset(Dataset):
         self.ts_dicts = self.get_dicts(self.args.ts_xyzs)       # list of ts dictionaries
 
         self.targets = self.get_targets()                       # list of regression targets
-        self.mean = np.mean(self.targets)
-        self.std = np.std(self.targets)
+        self.mean = np.mean(self.targets, axis=0)
+        self.std = np.std(self.targets, axis=0)
 
     def get_dicts(self, xyz_path):
         """Creates list of dictionaries containing the molecule coordinates and atomic numbers"""
@@ -54,7 +54,7 @@ class ReactionDataset(Dataset):
         data.r_z = torch.tensor([NUMBER_BY_SYMBOL[sym] for sym in r_dict['symbols']], dtype=torch.long)
         data.ts_coords = torch.tensor(ts_dict['coords'], dtype=torch.float)
         data.ts_z = torch.tensor([NUMBER_BY_SYMBOL[sym] for sym in ts_dict['symbols']], dtype=torch.long)
-        data.y = torch.tensor(y, dtype=torch.float)
+        data.y = torch.tensor(y, dtype=torch.float).unsqueeze(0)
         return data
 
     def __len__(self):
